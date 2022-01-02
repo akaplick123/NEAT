@@ -1,5 +1,6 @@
 package de.andre.neat;
 
+import java.util.Random;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,8 +11,8 @@ public class ConnectionGene {
 
   private final NodeGene inNode;
   private final NodeGene outNode;
-  private final ConnectionWeight weight;
   private final InnovationNumber innovation;
+  private ConnectionWeight weight;
   private ExpressedState expressed;
 
   @Builder
@@ -26,6 +27,14 @@ public class ConnectionGene {
 
   public void disable() {
     this.expressed = ExpressedState.NOT_EXPRESSED;
+  }
+
+  public void pertubeWeight(Random r) {
+    this.weight = this.weight.pertube(r);
+  }
+
+  public void assignNewWeight(Random r) {
+    this.weight = ConnectionWeight.random(r);
   }
 
   public ConnectionGene createCopy() {

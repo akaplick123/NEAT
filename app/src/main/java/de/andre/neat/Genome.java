@@ -33,64 +33,6 @@ public class Genome {
     return newGenome;
   }
 
-  public List<NodeGene> getNodes() {
-    return Collections.unmodifiableList(nodes);
-  }
-
-  public List<ConnectionGene> getConnections() {
-    return Collections.unmodifiableList(connections);
-  }
-
-  public void addConnectionMutation(Random r) {
-    NodeGene inNode = pickRandomNode(r);
-    NodeGene outNode = pickRandomNode(r);
-
-    // check if connection exists
-    if (!connectionExists(inNode, outNode)) {
-      // create new connection
-      ConnectionGene connection = ConnectionGene.builder()
-          .inNode(inNode)
-          .outNode(outNode)
-          .weight(ConnectionWeight.random(r))
-          .expressed(ExpressedState.EXPRESSED)
-          .innovation(InnovationNumber.next())
-          .build();
-      connections.add(connection);
-    }
-  }
-
-  public void addNodeMutation(Random r) {
-    // pick a random connection
-    ConnectionGene oldConnection = pickRandomConnection(r);
-    oldConnection.disable();
-
-    // create a new node
-    NodeGene newNode = NodeGene.builder()
-        .id(NodeId.next())
-        .type(Type.HIDDEN)
-        .build();
-    nodes.add(newNode);
-
-    // add connection
-    ConnectionGene newConnection1 = ConnectionGene.builder()
-        .inNode(oldConnection.getInNode())
-        .outNode(newNode)
-        .weight(ConnectionWeight.one())
-        .expressed(ExpressedState.EXPRESSED)
-        .innovation(InnovationNumber.next())
-        .build();
-    connections.add(newConnection1);
-
-    ConnectionGene newConnection2 = ConnectionGene.builder()
-        .inNode(newNode)
-        .outNode(oldConnection.getOutNode())
-        .weight(oldConnection.getWeight())
-        .expressed(ExpressedState.EXPRESSED)
-        .innovation(InnovationNumber.next())
-        .build();
-    connections.add(newConnection2);
-  }
-
   /**
    * @param parent1 the more fit parent
    * @param parent2 the less fit parent
@@ -151,6 +93,80 @@ public class Genome {
     return offspring;
   }
 
+  public List<NodeGene> getNodes() {
+    return Collections.unmodifiableList(nodes);
+  }
+
+  public List<ConnectionGene> getConnections() {
+    return Collections.unmodifiableList(connections);
+  }
+
+  public void weightMutation(Random r) {
+    for (ConnectionGene connection : connections) {
+      if (r.nextFloat() < 0.8f) {
+        // weight shall mutate
+        if (r.nextFloat() < 0.9f) {
+          // weight shall mutate uniformly perturbed
+          connection.pertubeWeight(r);
+        } else {
+          // weight shall get a totally random new value
+          connection.assignNewWeight(r);
+        }
+      }
+    }
+
+  }
+
+  public void addConnectionMutation(Random r) {
+    NodeGene inNode = pickRandomNode(r);
+    NodeGene outNode = pickRandomNode(r);
+
+    // check if connection exists
+    if (!connectionExists(inNode, outNode)) {
+      // create new connection
+      ConnectionGene connection = ConnectionGene.builder()
+          .inNode(inNode)
+          .outNode(outNode)
+          .weight(ConnectionWeight.random(r))
+          .expressed(ExpressedState.EXPRESSED)
+          .innovation(InnovationNumber.next())
+          .build();
+      connections.add(connection);
+    }
+  }
+
+  public void addNodeMutation(Random r) {
+    // pick a random connection
+    ConnectionGene oldConnection = pickRandomConnection(r);
+    oldConnection.disable();
+
+    // create a new node
+    NodeGene newNode = NodeGene.builder()
+        .id(NodeId.next())
+        .type(Type.HIDDEN)
+        .build();
+    nodes.add(newNode);
+
+    // add connection
+    ConnectionGene newConnection1 = ConnectionGene.builder()
+        .inNode(oldConnection.getInNode())
+        .outNode(newNode)
+        .weight(ConnectionWeight.one())
+        .expressed(ExpressedState.EXPRESSED)
+        .innovation(InnovationNumber.next())
+        .build();
+    connections.add(newConnection1);
+
+    ConnectionGene newConnection2 = ConnectionGene.builder()
+        .inNode(newNode)
+        .outNode(oldConnection.getOutNode())
+        .weight(oldConnection.getWeight())
+        .expressed(ExpressedState.EXPRESSED)
+        .innovation(InnovationNumber.next())
+        .build();
+    connections.add(newConnection2);
+  }
+
   private ConnectionGene pickRandomConnection(Random r) {
     return connections.get(r.nextInt(connections.size()));
   }
@@ -167,5 +183,22 @@ public class Genome {
 
   private NodeGene pickRandomNode(Random r) {
     return nodes.get(r.nextInt(nodes.size()));
+  }
+
+  public int nodeCount() {
+    return nodes.size();
+  }
+
+  public InnovationNumber maxInnovationNumber() {
+    InnovationNumber max = null;
+    for (ConnectionGene connection : this.connections) {
+      if (max == null) {
+        max = connection.getInnovation();
+      } else if (connection.getInnovation().getValue() > max.getValue()) {
+        max = connection.getInnovation();
+      }
+    }
+
+    return max;
   }
 }
