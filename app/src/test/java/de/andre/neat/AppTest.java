@@ -9,6 +9,6 @@ class AppTest {
   @Test
   void appHasAGreeting() {
     App classUnderTest = new App();
-    assertThat(classUnderTest.getGreeting()).isEqualTo("app should have a greeting");
+    assertThat(classUnderTest.getGreeting()).isEqualTo("Hello World!");
   }
 }

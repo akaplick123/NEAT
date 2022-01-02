@@ -60,7 +60,7 @@ class GenomeTest {
     when(r.nextFloat()).thenReturn(0.8f);
 
     // when: add connection is called
-    genome.addConnectionMutation(r);
+    genome.addConnectionMutation(r, new InnovationNumberFactory());
 
     // then: a new connection should have been created
     assertThat(genome.getConnections()).hasSize(7);
@@ -113,7 +113,7 @@ class GenomeTest {
     when(r.nextInt(anyInt())).thenReturn(2);
 
     // when: add connection is called
-    genome.addNodeMutation(r);
+    genome.addNodeMutation(r, new NodeFactory(), new InnovationNumberFactory());
 
     // then: a new node should have been created
     assertThat(genome.getNodes()).hasSize(6);
@@ -228,6 +228,7 @@ class GenomeTest {
     // then: should have 10 connections
     assertThat(child.getConnections())
         .usingRecursiveFieldByFieldElementComparator()
-        .containsExactlyInAnyOrder(con11, con12, con23, con14, con25, con26, con27, con18, con29, con2A);
+        .containsExactlyInAnyOrder(con11, con12, con23, con14, con25, con26, con27, con18, con29,
+            con2A);
   }
 }

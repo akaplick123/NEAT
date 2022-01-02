@@ -1,6 +1,5 @@
 package de.andre.neat;
 
-import de.andre.neat.NodeGene.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -114,55 +113,58 @@ public class Genome {
         }
       }
     }
-
   }
 
-  public void addConnectionMutation(Random r) {
+  public void addConnectionMutation(Random r, InnovationNumberFactory innovationNumberFactory) {
     NodeGene inNode = pickRandomNode(r);
     NodeGene outNode = pickRandomNode(r);
 
     // check if connection exists
     if (!connectionExists(inNode, outNode)) {
       // create new connection
+      InnovationNumber innovation = innovationNumberFactory.create(inNode,
+          outNode);
       ConnectionGene connection = ConnectionGene.builder()
           .inNode(inNode)
           .outNode(outNode)
           .weight(ConnectionWeight.random(r))
           .expressed(ExpressedState.EXPRESSED)
-          .innovation(InnovationNumber.next())
+          .innovation(innovation)
           .build();
       connections.add(connection);
     }
   }
 
-  public void addNodeMutation(Random r) {
+  public void addNodeMutation(Random r, NodeFactory nodeFactory,
+      InnovationNumberFactory innovationNumberFactory) {
     // pick a random connection
     ConnectionGene oldConnection = pickRandomConnection(r);
     oldConnection.disable();
 
     // create a new node
-    NodeGene newNode = NodeGene.builder()
-        .id(NodeId.next())
-        .type(Type.HIDDEN)
-        .build();
+    NodeGene newNode = nodeFactory.create(oldConnection.getInnovation());
     nodes.add(newNode);
 
     // add connection
+    InnovationNumber innovation1 = innovationNumberFactory.create(oldConnection.getInNode(),
+        newNode);
     ConnectionGene newConnection1 = ConnectionGene.builder()
         .inNode(oldConnection.getInNode())
         .outNode(newNode)
         .weight(ConnectionWeight.one())
         .expressed(ExpressedState.EXPRESSED)
-        .innovation(InnovationNumber.next())
+        .innovation(innovation1)
         .build();
     connections.add(newConnection1);
 
+    InnovationNumber innovation2 = innovationNumberFactory.create(newNode,
+        oldConnection.getOutNode());
     ConnectionGene newConnection2 = ConnectionGene.builder()
         .inNode(newNode)
         .outNode(oldConnection.getOutNode())
         .weight(oldConnection.getWeight())
         .expressed(ExpressedState.EXPRESSED)
-        .innovation(InnovationNumber.next())
+        .innovation(innovation2)
         .build();
     connections.add(newConnection2);
   }
