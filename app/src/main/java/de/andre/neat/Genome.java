@@ -1,5 +1,8 @@
 package de.andre.neat;
 
+import static de.andre.neat.Parameter.MUTATION_RATE_WEIGHT;
+import static de.andre.neat.Parameter.MUTATION_RATE_WEIGHT_PERTUBE;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -102,9 +105,9 @@ public class Genome {
 
   public void weightMutation(Random r) {
     for (ConnectionGene connection : connections) {
-      if (r.nextFloat() < 0.8f) {
+      if (r.nextFloat() < MUTATION_RATE_WEIGHT) {
         // weight shall mutate
-        if (r.nextFloat() < 0.9f) {
+        if (r.nextFloat() < MUTATION_RATE_WEIGHT_PERTUBE) {
           // weight shall mutate uniformly perturbed
           connection.pertubeWeight(r);
         } else {

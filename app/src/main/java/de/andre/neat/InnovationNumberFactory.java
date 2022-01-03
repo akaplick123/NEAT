@@ -13,11 +13,8 @@ public class InnovationNumberFactory {
    * input, then the same innovation number must be returned.
    */
   public InnovationNumber create(NodeGene inNode, NodeGene outNode) {
-    HashMap<NodeId, InnovationNumber> sublist = allConnections.get(inNode.getId());
-    if (sublist == null) {
-      sublist = new HashMap<>();
-      allConnections.put(inNode.getId(), sublist);
-    }
+    HashMap<NodeId, InnovationNumber> sublist = allConnections.computeIfAbsent(inNode.getId(),
+        k -> new HashMap<>());
     InnovationNumber innovation = sublist.get(outNode.getId());
     if (innovation == null) {
       innovation = InnovationNumber.next();

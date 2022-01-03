@@ -1,13 +1,13 @@
 package de.andre.neat;
 
+import static de.andre.neat.Parameter.PARAM_C1;
+import static de.andre.neat.Parameter.PARAM_C2;
+import static de.andre.neat.Parameter.PARAM_C3;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class CompatibiltyCalculator {
-
-  private static final float PARAM_C1 = 1.0f;
-  private static final float PARAM_C2 = 1.0f;
-  private static final float PARAM_C3 = 0.4f;
 
   public float calcCompatibility(Genome genome1, Genome genome2) {
 
