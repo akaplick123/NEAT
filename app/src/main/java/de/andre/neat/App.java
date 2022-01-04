@@ -23,8 +23,8 @@ public class App {
       }
       System.out.print("\tDead genes in best performer: " + deadGenes);
       System.out.print("\n");
-      if (i % 10 == 0) {
-//        GenomePrinter.printGenome(eval.getFittestGenome(), "output/connection_amount_2/"+i+".png");
+      if (i % 100 == 0) {
+        GenomePrinter.printGenome(evaluator.getFittestGenome(), "output/xor/genome_"+i+".png");
       }
     }
   }

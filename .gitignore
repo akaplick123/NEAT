@@ -31,3 +31,5 @@ build
 ## IDEA stuff
 .idea
 
+### Ignore test outputs
+output
