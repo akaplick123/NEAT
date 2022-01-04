@@ -26,8 +26,7 @@ public class NeuralNetwork {
       if (connection.getExpressed() == ExpressedState.EXPRESSED) {
         NeuralNetworkNode inNode = network.nodeGeneMap.get(connection.getInNode());
         NeuralNetworkNode outNode = network.nodeGeneMap.get(connection.getOutNode());
-        Connection connection1 = new Connection(connection.getWeight(), inNode);
-        outNode.addConnection(connection1);
+        outNode.addConnection(new Connection(connection.getWeight(), inNode));
       }
     }
 
@@ -43,7 +42,8 @@ public class NeuralNetwork {
     if (networkNode.isCalculated()) {
       return networkNode.getValue();
     }
-    throw new IllegalArgumentException("Node " + node.getId() + " has not been calculated.");
+    throw new ValueNotPresentException(
+        "Value of node " + node.getId() + " has not been calculated.");
   }
 
   public void compute(UnaryOperator<Float> activationFunction) {
@@ -61,6 +61,12 @@ public class NeuralNetwork {
         }
       }
     } while (foundNodeForCalculation);
+  }
+
+  public void resetValues() {
+    for (NeuralNetworkNode node : nodes) {
+      node.resetValue();
+    }
   }
 
   private static class NeuralNetworkNode {
@@ -110,6 +116,11 @@ public class NeuralNetwork {
 
       this.value = activationFunction.apply(sumValue);
       this.calculated = true;
+    }
+
+    public void resetValue() {
+      this.calculated = false;
+      this.value = 0f;
     }
   }
 

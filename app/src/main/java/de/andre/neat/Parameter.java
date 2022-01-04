@@ -1,6 +1,5 @@
 package de.andre.neat;
 
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public interface Parameter {
@@ -70,5 +69,5 @@ public interface Parameter {
   /**
    * The activation function used
    */
-  UnaryOperator<Float> PARAM_ACTIVATION_FUNCTION = value -> value;
+  UnaryOperator<Float> PARAM_ACTIVATION_FUNCTION = x -> (float) (1d / (1d + Math.exp(-4.9d * x)));
 }

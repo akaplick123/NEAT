@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import lombok.Getter;
-import lombok.Value;
 
 public abstract class Evaluator {
 
@@ -24,6 +23,11 @@ public abstract class Evaluator {
   private final NodeFactory nodeFactory = new NodeFactory();
   private final InnovationNumberFactory innovationNumberFactory = new InnovationNumberFactory();
   private final Random r = new Random();
+
+  @Getter
+  private Fitness highestFitness;
+  @Getter
+  private Genome fittestGenome;
 
   protected Evaluator(int populationSize) {
     this.populationSize = populationSize;
@@ -53,6 +57,12 @@ public abstract class Evaluator {
 
       Species specie = speciesMap.get(genome);
       specie.updateGenomeFitness(genome, fitness);
+
+      // remember the fittest genome
+      if (highestFitness == null || fitness.getValue() > highestFitness.getValue()) {
+        this.highestFitness = fitness;
+        this.fittestGenome = genome;
+      }
     }
 
     // put the best genome of each species into the next generation
@@ -152,20 +162,8 @@ public abstract class Evaluator {
     return specie;
   }
 
-
-  @Value(staticConstructor = "of")
-  protected static class Fitness implements Comparable<Fitness> {
-
-    float value;
-
-    public static Fitness zero() {
-      return Fitness.of(0f);
-    }
-
-    @Override
-    public int compareTo(Fitness o) {
-      return Float.compare(this.value, o.value);
-    }
+  public int getNumberOfSpecies() {
+    return species.size();
   }
 
   private static class Species {

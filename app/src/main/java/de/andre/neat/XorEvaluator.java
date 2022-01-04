@@ -8,6 +8,12 @@ import java.util.Random;
 
 public class XorEvaluator extends Evaluator {
 
+  private static final List<List<Integer>> TESTDATA = List.of(
+      List.of(1, 0, 0, 1),
+      List.of(1, 1, 0, 0),
+      List.of(1, 0, 1, 0),
+      List.of(1, 1, 1, 1)
+  );
   private NodeGene biasNode;
   private NodeGene input1Node;
   private NodeGene input2Node;
@@ -15,13 +21,6 @@ public class XorEvaluator extends Evaluator {
   private InnovationNumber inno1;
   private InnovationNumber inno2;
   private InnovationNumber inno3;
-
-  private static final List<List<Integer>> TESTDATA = List.of(
-      List.of(1, 0, 0, 1),
-      List.of(1, 1, 0, 0),
-      List.of(1, 0, 1, 0),
-      List.of(1, 1, 1, 1)
-  );
 
   protected XorEvaluator(int populationSize) {
     super(populationSize);
@@ -80,21 +79,29 @@ public class XorEvaluator extends Evaluator {
 
   @Override
   protected Fitness evaluateGenome(Genome genome) {
-
-    for (List<Integer> testdate : TESTDATA) {
-      float bias = testdate.get(0);
-      float input1 = testdate.get(1);
-      float input2 = testdate.get(2);
-      float expectedOutput = testdate.get(3);
-
+    try {
       NeuralNetwork neuralNetwork = NeuralNetwork.createFromGenome(genome);
-      neuralNetwork.putValue(biasNode, bias);
-      neuralNetwork.putValue(input1Node, input1);
-      neuralNetwork.putValue(input2Node, input2);
-      neuralNetwork.compute(PARAM_ACTIVATION_FUNCTION);
-      float output = neuralNetwork.getValue(outputNode);
-    }
+      float sumDistance = 0f;
+      for (List<Integer> testdate : TESTDATA) {
+        float bias = testdate.get(0);
+        float input1 = testdate.get(1);
+        float input2 = testdate.get(2);
+        float expectedOutput = testdate.get(3);
 
-    return null;
+        neuralNetwork.resetValues();
+        neuralNetwork.putValue(biasNode, bias);
+        neuralNetwork.putValue(input1Node, input1);
+        neuralNetwork.putValue(input2Node, input2);
+        neuralNetwork.compute(PARAM_ACTIVATION_FUNCTION);
+        float output = neuralNetwork.getValue(outputNode);
+
+        sumDistance += Math.abs(expectedOutput - output);
+      }
+
+      return Fitness.of(TESTDATA.size() - sumDistance);
+    } catch (ValueNotPresentException ex) {
+      // cannot evaluate the network, so apply the lowest possible fitness function
+      return Fitness.of(Float.MIN_VALUE);
+    }
   }
 }

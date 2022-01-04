@@ -3,6 +3,7 @@
 ## Source
 
 This sourcecode is based on the three YouTube videos
+* http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf
 * https://www.youtube.com/watch?v=1I1eG-WLLrY
 * https://www.youtube.com/watch?v=mep_1VZOepU
 * https://www.youtube.com/watch?v=PXxRjKNX1uw
