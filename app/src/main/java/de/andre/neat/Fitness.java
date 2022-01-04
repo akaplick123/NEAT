@@ -5,11 +5,9 @@ import lombok.Value;
 @Value(staticConstructor = "of")
 public class Fitness implements Comparable<Fitness> {
 
-  float value;
+  public static Fitness NOT_AVAILABLE = Fitness.of(Float.MIN_VALUE);
 
-  public static Fitness zero() {
-    return Fitness.of(0f);
-  }
+  float value;
 
   @Override
   public int compareTo(Fitness o) {

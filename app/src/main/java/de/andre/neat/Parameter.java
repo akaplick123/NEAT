@@ -70,4 +70,9 @@ public interface Parameter {
    * The activation function used
    */
   UnaryOperator<Float> PARAM_ACTIVATION_FUNCTION = x -> (float) (1d / (1d + Math.exp(-4.9d * x)));
+
+  /**
+   * Number of generations a species can survive without improvement of their fitness
+   */
+  int PARAM_MAX_GENERATIONS_WITHOUT_IMPROVEMENT = 15;
 }

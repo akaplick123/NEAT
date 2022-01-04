@@ -114,7 +114,7 @@ public class Genome {
   public Genome weightMutation(Random r) {
     Genome clone = new Genome();
     clone.nodes.addAll(this.nodes);
-    for (ConnectionGene connection : clone.connections) {
+    for (ConnectionGene connection : this.connections) {
       if (r.nextFloat() < PARAM_MUTATION_RATE_WEIGHT_PERTUBE) {
         // weight shall mutate uniformly perturbed
         clone.connections.add(connection.pertubeWeight(r));
@@ -127,13 +127,13 @@ public class Genome {
   }
 
   public Genome addConnectionMutation(Random r, InnovationNumberFactory innovationNumberFactory) {
-    Genome clone = cloneGenome();
-    NodeGene inNode = clone.pickRandomNode(r);
-    NodeGene outNode = clone.pickRandomNode(r);
+    NodeGene inNode = pickRandomNode(r);
+    NodeGene outNode = pickRandomNode(r);
 
     // check if connection exists
-    if (!clone.connectionExists(inNode, outNode)) {
+    if (!connectionExists(inNode, outNode)) {
       // create new connection
+      Genome clone = cloneGenome();
       InnovationNumber innovation = innovationNumberFactory.create(inNode,
           outNode);
       ConnectionGene connection = ConnectionGene.builder()
@@ -144,8 +144,10 @@ public class Genome {
           .innovation(innovation)
           .build();
       clone.connections.add(connection);
+      return clone;
     }
-    return clone;
+
+    return this;
   }
 
   public Genome addNodeMutation(Random r, NodeFactory nodeFactory,

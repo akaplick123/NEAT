@@ -101,7 +101,7 @@ public class XorEvaluator extends Evaluator {
       return Fitness.of(TESTDATA.size() - sumDistance);
     } catch (ValueNotPresentException ex) {
       // cannot evaluate the network, so apply the lowest possible fitness function
-      return Fitness.of(Float.MIN_VALUE);
+      return Fitness.NOT_AVAILABLE;
     }
   }
 }

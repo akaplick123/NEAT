@@ -60,12 +60,12 @@ class GenomeTest {
     when(r.nextFloat()).thenReturn(0.8f);
 
     // when: add connection is called
-    genome.addConnectionMutation(r, new InnovationNumberFactory());
+    Genome mutatedGenome = genome.addConnectionMutation(r, new InnovationNumberFactory());
 
     // then: a new connection should have been created
-    assertThat(genome.getConnections()).hasSize(7);
-    assertThat(genome.getConnections().get(6).getInNode()).isSameAs(node3);
-    assertThat(genome.getConnections().get(6).getOutNode()).isSameAs(node5);
+    assertThat(mutatedGenome.getConnections()).hasSize(7);
+    assertThat(mutatedGenome.getConnections().get(6).getInNode()).isSameAs(node3);
+    assertThat(mutatedGenome.getConnections().get(6).getOutNode()).isSameAs(node5);
   }
 
   @Test
@@ -113,22 +113,22 @@ class GenomeTest {
     when(r.nextInt(anyInt())).thenReturn(2);
 
     // when: add connection is called
-    genome.addNodeMutation(r, new NodeFactory(), new InnovationNumberFactory());
+    Genome mutatedGenome = genome.addNodeMutation(r, new NodeFactory(), new InnovationNumberFactory());
 
     // then: a new node should have been created
-    assertThat(genome.getNodes()).hasSize(6);
-    assertThat(genome.getNodes().get(5).getType()).isEqualTo(Type.HIDDEN);
-    NodeGene node6 = genome.getNodes().get(5);
+    assertThat(mutatedGenome.getNodes()).hasSize(6);
+    assertThat(mutatedGenome.getNodes().get(5).getType()).isEqualTo(Type.HIDDEN);
+    NodeGene node6 = mutatedGenome.getNodes().get(5);
 
     // then: two new connection should have been created
-    assertThat(genome.getConnections()).hasSize(8);
-    assertThat(genome.getConnections().get(6).getInNode()).isSameAs(node3);
-    assertThat(genome.getConnections().get(6).getOutNode()).isSameAs(node6);
-    assertThat(genome.getConnections().get(6).getWeight()).isEqualTo(ConnectionWeight.of(1f));
-    assertThat(genome.getConnections().get(7).getInNode()).isSameAs(node6);
-    assertThat(genome.getConnections().get(7).getOutNode()).isSameAs(node4);
-    assertThat(genome.getConnections().get(7).getWeight()).isEqualTo(ConnectionWeight.of(0.5f));
-    assertThat(genome.getConnections().get(2).getExpressed()).isEqualTo(
+    assertThat(mutatedGenome.getConnections()).hasSize(8);
+    assertThat(mutatedGenome.getConnections().get(6).getInNode()).isSameAs(node3);
+    assertThat(mutatedGenome.getConnections().get(6).getOutNode()).isSameAs(node6);
+    assertThat(mutatedGenome.getConnections().get(6).getWeight()).isEqualTo(ConnectionWeight.of(1f));
+    assertThat(mutatedGenome.getConnections().get(7).getInNode()).isSameAs(node6);
+    assertThat(mutatedGenome.getConnections().get(7).getOutNode()).isSameAs(node4);
+    assertThat(mutatedGenome.getConnections().get(7).getWeight()).isEqualTo(ConnectionWeight.of(0.5f));
+    assertThat(mutatedGenome.getConnections().get(2).getExpressed()).isEqualTo(
         ExpressedState.NOT_EXPRESSED);
   }
 
