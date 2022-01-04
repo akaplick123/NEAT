@@ -12,7 +12,7 @@ public class ConnectionGene {
   private final NodeGene inNode;
   private final NodeGene outNode;
   private final InnovationNumber innovation;
-  private ConnectionWeight weight;
+  private final ConnectionWeight weight;
   private ExpressedState expressed;
 
   @Builder
@@ -29,12 +29,14 @@ public class ConnectionGene {
     this.expressed = ExpressedState.NOT_EXPRESSED;
   }
 
-  public void pertubeWeight(Random r) {
-    this.weight = this.weight.pertube(r);
+  public ConnectionGene pertubeWeight(Random r) {
+    ConnectionWeight newWeight = this.weight.pertube(r);
+    return new ConnectionGene(inNode, outNode, newWeight, expressed, innovation);
   }
 
-  public void assignNewWeight(Random r) {
-    this.weight = ConnectionWeight.random(r);
+  public ConnectionGene assignNewWeight(Random r) {
+    ConnectionWeight newWeight = ConnectionWeight.random(r);
+    return new ConnectionGene(inNode, outNode, newWeight, expressed, innovation);
   }
 
   public ConnectionGene createCopy() {

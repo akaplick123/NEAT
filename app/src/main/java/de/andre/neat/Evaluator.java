@@ -85,7 +85,7 @@ public abstract class Evaluator {
       // add genomes to next generation without crossover
       Genome genome = selectRandomly(r, availableGenomes);
       availableGenomes.remove(genome);
-      applyMutations(genome);
+      genome = applyMutations(genome);
       nextGenGenomes.add(genome);
       genomesWithoutCrossoverMissing--;
     }
@@ -116,7 +116,7 @@ public abstract class Evaluator {
         // parent2 is the fitter parent
         offspring = Genome.crossover(parent2, parent1, false, r);
       }
-      applyMutations(offspring);
+      offspring = applyMutations(offspring);
       nextGenGenomes.add(offspring);
     }
 
@@ -132,16 +132,18 @@ public abstract class Evaluator {
     fitnessMap.clear();
   }
 
-  private void applyMutations(Genome genome) {
+  private Genome applyMutations(Genome genome) {
+    Genome mutatedGenome = genome;
     if (r.nextFloat() <= PARAM_MUTATION_RATE) {
-      genome.weightMutation(r);
+      mutatedGenome = mutatedGenome.weightMutation(r);
     }
     if (r.nextFloat() <= PARAM_NEW_NODE_MUTATION_RATE) {
-      genome.addNodeMutation(r, nodeFactory, innovationNumberFactory);
+      mutatedGenome = mutatedGenome.addNodeMutation(r, nodeFactory, innovationNumberFactory);
     }
     if (r.nextFloat() <= PARAM_NEW_CONNECTION_MUTATION_RATE) {
-      genome.addConnectionMutation(r, innovationNumberFactory);
+      mutatedGenome = mutatedGenome.addConnectionMutation(r, innovationNumberFactory);
     }
+    return mutatedGenome;
   }
 
   private Genome selectRandomly(Random r, List<Genome> genomes) {
